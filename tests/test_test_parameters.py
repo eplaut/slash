@@ -41,6 +41,19 @@ def test_dict_parameter_values():
     assert values == sorted(result.data['param'] for result in session.results)
 
 
+def test_duplicate_parameters():
+
+    values = ["a", "b", "a"]
+
+    @slash.parametrize('param', copy.deepcopy(values))
+    def test_example(param):
+        _set('param', param)
+
+    session = run_tests_assert_success(test_example)
+    assert sorted(values) == sorted(result.data['param'] for result in session.results)
+
+
+
 def test_before_after_parameters(cartesian):
 
     class Parameterized(slash.Test):
